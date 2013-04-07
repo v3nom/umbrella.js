@@ -21,13 +21,15 @@ define(['Umbrella/init', 'lib/q.min'], function (_umbrella, _q) {
 
     var testDB;
 
+    describe('Jasmine', function () {
+        it('baseline test', function () {
+            expect(true).toBeTruthy();
+        });
+    });
+
     describe('Loading UmbrellaJS library', function () {
         it('should not be undefined', function () {
             expect(Umbrella).toBeDefined();
-        });
-
-        it('baseline test', function () {
-            expect(true).toBeTruthy();
         });
 
         it('should load database', function () {
