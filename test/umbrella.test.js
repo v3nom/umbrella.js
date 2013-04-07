@@ -26,6 +26,10 @@ define(['Umbrella/init', 'lib/q.min'], function (_umbrella, _q) {
             expect(Umbrella).toBeDefined();
         });
 
+        it('baseline test', function () {
+            expect(true).toBeTruthy();
+        });
+
         it('should load database', function () {
             var flag = false;
 
