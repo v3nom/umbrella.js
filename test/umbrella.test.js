@@ -38,7 +38,7 @@ define(['Umbrella/init', 'lib/q.min'], function (_umbrella, _q) {
 
             waitsFor(function () {
                 return flag;
-            }, 'database should become ready', 100);
+            }, 'database should become ready', 5000);
 
 
             runs(function () {
@@ -67,7 +67,7 @@ define(['Umbrella/init', 'lib/q.min'], function (_umbrella, _q) {
 
             waitsFor(function () {
                 return flag;
-            }, 100);
+            }, 1000);
 
             runs(function () {
                 expect(result).toBe(true);
@@ -88,7 +88,7 @@ define(['Umbrella/init', 'lib/q.min'], function (_umbrella, _q) {
 
             waitsFor(function () {
                 return flag;
-            }, 500);
+            }, 1000);
         });
     });
 
@@ -103,7 +103,7 @@ define(['Umbrella/init', 'lib/q.min'], function (_umbrella, _q) {
             });
             waitsFor(function () {
                 return flag;
-            }, 500);
+            }, 1000);
         });
 
         it('should support reversed toArray()', function () {
@@ -117,7 +117,7 @@ define(['Umbrella/init', 'lib/q.min'], function (_umbrella, _q) {
             });
             waitsFor(function () {
                 return flag;
-            }, 500);
+            }, 1000);
         })
     });
 });

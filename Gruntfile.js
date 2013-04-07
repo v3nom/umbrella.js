@@ -45,5 +45,5 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-rm');
     grunt.loadNpmTasks('grunt-karma');
 
-    grunt.registerTask('default', ['typescript', 'requirejs', 'karma', 'rm']);
+    grunt.registerTask('default', ['typescript', 'requirejs', 'karma:unit', 'rm']);
 };
