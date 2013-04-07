@@ -1,0 +1,19 @@
+{
+  "name": "UmbrellaJS",
+  "version": "0.0.1",
+  "author": "Tomas Grubliauskas",
+  "description": "IndexedDB wrapper library",
+  "devDependencies": {
+    "karma": "~0.8",
+    "grunt": "~0.4.1",
+    "grunt-typescript": "~0.1.2",
+    "typescript": "~0.8.3",
+    "requirejs": "~2.1.5",
+    "grunt-contrib-requirejs": "~0.4.0",
+    "grunt-rm": "0.0.4",
+    "grunt-karma": "~0.4.3"
+  },
+  "scripts": {
+    "test": "grunt"
+  }
+}
