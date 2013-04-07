@@ -38,8 +38,7 @@ define(['Umbrella/init', 'lib/q.min'], function (_umbrella, _q) {
 
             waitsFor(function () {
                 return flag;
-            }, 'database should become ready', 5000);
-
+            }, 'database should become ready', 2000);
 
             runs(function () {
                 expect(true).toBe(true);
