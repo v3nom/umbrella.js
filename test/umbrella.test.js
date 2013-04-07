@@ -32,18 +32,16 @@ define(['Umbrella/init', 'lib/q.min'], function (_umbrella, _q) {
             runs(function () {
                 dbPromise.then(function (db) {
                     testDB = db;
+                    expect(true).toBe(true);
                     flag = true;
+                }, function (error) {
+                    expect(false).toBe(true);
                 });
             });
 
             waitsFor(function () {
                 return flag;
             }, 'database should become ready', 2000);
-
-            runs(function () {
-                expect(true).toBe(true);
-                expect(testDB).toBeDefined();
-            });
         });
     });
 
