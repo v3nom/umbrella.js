@@ -49,4 +49,5 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('default', ['typescript', 'wrapFn', 'closurecompiler', 'karma']);
+    grunt.registerTask('test', ['karma']);
 };
