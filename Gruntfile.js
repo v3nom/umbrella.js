@@ -2,33 +2,18 @@
 // 2. Run Jasmine unit tests
 // 3. Bump version
 // 3. Run requirejs optimizer from temp directory, output to build directory
-// 
+var path = require('path');
+
 module.exports = function (grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         typescript: {
             base: {
-                src: ['src/**/*.ts'],
-                dest: ['tmp'],
+                src: 'src/Umbrella/init.ts',
+                dest: 'build/umbrella.js',
                 options: {
-                    module: 'amd',
                     target: 'es5'
                 }
-            }
-        },
-        requirejs: {
-            compile: {
-                options: {
-                    baseUrl: './tmp/src/',
-                    out: 'build/umbrella.js',
-                    name: 'Umbrella/init',
-                    optimize: 'uglify'//'uglify'
-                }
-            }
-        },
-        rm: {
-            tmp: {
-                dir: 'tmp'
             }
         },
         karma: {
@@ -37,13 +22,31 @@ module.exports = function (grunt) {
                 singleRun: true,
                 browsers: ['Firefox']
             }
+        },
+        closurecompiler: {
+            optimize: {
+                files: {
+                    "build/umbrella.min.js": [path.resolve('build/umbrella.js')]
+                },
+                options: {
+                    "compilation_level": "SIMPLE_OPTIMIZATIONS"
+                }
+            }
         }
     });
 
     grunt.loadNpmTasks('grunt-typescript');
-    grunt.loadNpmTasks('grunt-contrib-requirejs');
-    grunt.loadNpmTasks('grunt-rm');
     grunt.loadNpmTasks('grunt-karma');
+    grunt.loadNpmTasks('grunt-closurecompiler');
 
-    grunt.registerTask('default', ['typescript', 'requirejs', 'karma:unit', 'rm']);
+    grunt.registerTask('wrapFn', 'Wrap library in a function', function () {
+        var fileName = path.resolve('build/umbrella.js');
+        var fileStart = '(function(){';
+        var fileEnd = '})()';
+        var file = grunt.file.read(fileName);
+        var newFile = [fileStart, file, fileEnd];
+        grunt.file.write(fileName, newFile.join(''));
+    });
+
+    grunt.registerTask('default', ['typescript', 'wrapFn', 'closurecompiler', 'karma']);
 };

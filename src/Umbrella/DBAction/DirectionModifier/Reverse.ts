@@ -1,10 +1,11 @@
-import CursorOptions = module('../CursorOptions');
+/// <reference path="../CursorOptions.ts"/>
+module DBAction {
+    export class Reverse {
+        constructor() {
+        }
 
-export class Reverse {
-    constructor() {
-    }
-
-    execute(cursorOptions: CursorOptions.CursorOptions) {
-        cursorOptions.cursorDirection.reverse = true;
+        execute(cursorOptions: DBAction.CursorOptions) {
+            cursorOptions.cursorDirection.reverse = true;
+        }
     }
 }

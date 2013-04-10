@@ -1,3 +1,5 @@
-export interface IModifiable{
-    
+module Store {
+    export interface IModifiable {
+
+    }
 }

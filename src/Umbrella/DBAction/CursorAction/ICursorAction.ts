@@ -1,2 +1,4 @@
-export interface ICursorAction {
+module DBAction {
+    export interface ICursorAction {
+    }
 }

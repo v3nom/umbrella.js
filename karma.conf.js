@@ -10,12 +10,9 @@ basePath = '';
 files = [
   JASMINE,
   JASMINE_ADAPTER,
-  REQUIRE,
-  REQUIRE_ADAPTER,
-  { pattern: 'lib/**/*.js', included: false },
-  { pattern: 'build/**/*', included: true },
-  { pattern: 'test/**/*.test.js', included: false },
-  'test/test-main.js'
+  { pattern: 'lib/**/*.js', included: true },
+  { pattern: 'build/umbrella.js', included: true },
+  { pattern: 'test/**/*.test.js', included: true }
 ];
 
 
@@ -59,7 +56,7 @@ autoWatch = false;
 // - Safari (only Mac)
 // - PhantomJS
 // - IE (only Windows)
-browsers = ['C:/Program Files (x86)/Mozilla Firefox/firefox.exe','IE'];
+browsers = ['C:/Program Files (x86)/Mozilla Firefox/firefox.exe', 'IE'];
 
 
 // If browser does not capture in given timeout [ms], kill it

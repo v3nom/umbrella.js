@@ -1,23 +1,25 @@
-import ICursorAction = module('./ICursorAction');
+/// <reference path="./ICursorAction.ts"/>
 
-export class Skip implements ICursorAction.ICursorAction {
+module DBAction {
+    export class Skip implements DBAction.ICursorAction {
 
-    private _skipCount: number;
+        private _skipCount: number;
 
-    constructor(skipCount: number) {
-        this._skipCount = skipCount;
-    }
+        constructor(skipCount: number) {
+            this._skipCount = skipCount;
+        }
 
-    execute(cursorAction, value, resultList: any[]): bool {
-        if (this._skipCount > 0) {
-            this._skipCount--;
-            cursorAction.resultAction = 'skip';
-            cursorAction.cursorAction.method = 'continue';
-            return false;
-        } else {
-            cursorAction.resultAction = 'take';
-            cursorAction.cursorAction.method = 'continue';
-            return true;
+        execute(cursorAction, value, resultList: any[]): bool {
+            if (this._skipCount > 0) {
+                this._skipCount--;
+                cursorAction.resultAction = 'skip';
+                cursorAction.cursorAction.method = 'continue';
+                return false;
+            } else {
+                cursorAction.resultAction = 'take';
+                cursorAction.cursorAction.method = 'continue';
+                return true;
+            }
         }
     }
 }

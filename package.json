@@ -8,10 +8,8 @@
     "grunt": "~0.4.1",
     "grunt-typescript": "~0.1.2",
     "typescript": "~0.8.3",
-    "requirejs": "~2.1.5",
-    "grunt-contrib-requirejs": "~0.4.0",
-    "grunt-rm": "0.0.4",
-    "grunt-karma": "~0.4.3"
+    "grunt-karma": "~0.4.3",
+    "grunt-closurecompiler": "~0.9.2"
   },
   "scripts": {
     "test": "grunt"
