@@ -1,18 +1,16 @@
-module DBAction {
-    export class CursorRange {
-        private _keyRange: IDBKeyRange;
+export class CursorRange {
+    private _keyRange: IDBKeyRange;
 
-        constructor() {
-            // null is valid value, there will be no range
-            this._keyRange = null;
-        }
+    constructor() {
+        // null is valid value, there will be no range
+        this._keyRange = null;
+    }
 
-        set cursorRange(value: IDBKeyRange) {
-            this._keyRange = value;
-        }
+    set cursorRange(value: IDBKeyRange) {
+        this._keyRange = value;
+    }
 
-        getValue() {
-            return this._keyRange;
-        }
+    getValue() {
+        return this._keyRange;
     }
 }

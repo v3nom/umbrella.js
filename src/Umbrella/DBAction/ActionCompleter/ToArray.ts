@@ -1,5 +1,4 @@
-module DBAction {
-    export class ToArray {
+export class ToArray {
         onSuccess(resultList, deferedResult) {
             deferedResult.resolve(resultList);
         }
@@ -14,4 +13,3 @@ module DBAction {
             console.log(error);
         }
     }
-}

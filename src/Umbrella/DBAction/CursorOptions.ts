@@ -1,30 +1,29 @@
-/// <reference path="./CursorDirection.ts"/>
-/// <reference path="./CursorRange.ts"/>
+import CursorDirection = module('./CursorDirection');
+import CursorRange = module('./CursorRange');
 
-module DBAction {
-    export class CursorOptions {
-        private _cursorDirection: DBAction.CursorDirection;
-        private _cursorRange: DBAction.CursorRange;
 
-        constructor() {
-            this._cursorDirection = new DBAction.CursorDirection();
-            this._cursorRange = new DBAction.CursorRange();
-        }
+export class CursorOptions {
+    private _cursorDirection: CursorDirection.CursorDirection;
+    private _cursorRange: CursorRange.CursorRange;
 
-        get cursorDirection() {
-            return this._cursorDirection;
-        }
+    constructor() {
+        this._cursorDirection = new CursorDirection.CursorDirection();
+        this._cursorRange = new CursorRange.CursorRange();
+    }
 
-        get cursorRange() {
-            return this._cursorRange;
-        }
+    get cursorDirection() {
+        return this._cursorDirection;
+    }
 
-        get cursorDirectionValue() {
-            return this._cursorDirection.getValue();
-        }
+    get cursorRange() {
+        return this._cursorRange;
+    }
 
-        get cursorRangeValue() {
-            return this._cursorRange.getValue();
-        }
+    get cursorDirectionValue() {
+        return this._cursorDirection.getValue();
+    }
+
+    get cursorRangeValue() {
+        return this._cursorRange.getValue();
     }
 }

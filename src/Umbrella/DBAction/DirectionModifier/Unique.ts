@@ -1,11 +1,9 @@
-/// <reference path="../CursorOptions.ts"/>
-module DBAction {
-    export class Unique {
-        constructor() {
-        }
+import CursorOptions = module('../CursorOptions');
+export class Unique {
+    constructor() {
+    }
 
-        execute(cursorOptions: DBAction.CursorOptions) {
-            cursorOptions.cursorDirection.unique = true;
-        }
+    execute(cursorOptions: CursorOptions.CursorOptions) {
+        cursorOptions.cursorDirection.unique = true;
     }
 }

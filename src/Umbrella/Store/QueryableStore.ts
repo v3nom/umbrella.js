@@ -1,89 +1,90 @@
-/// <reference path="./IQueryable.ts"/>
-/// <reference path="./IModifiable.ts"/>
-/// <reference path="../DBAction/ActionExecutor.ts"/>
-/// <reference path="../DBAction/CursorAction/Take.ts"/>
-/// <reference path="../DBAction/ActionCompleter/ToArray.ts"/>
-/// <reference path="../DBAction/ActionCompleter/ToObject.ts"/>
-/// <reference path="../DBAction/DirectionModifier/Unique.ts"/>
-/// <reference path="../DBAction/RangeModifier/Only.ts"/>
-/// <reference path="../DBAction/RangeModifier/InRange.ts"/>
-/// <reference path="../DBAction/DirectionModifier/Reverse.ts"/>
-/// <reference path="../DBAction/CursorAction/Skip.ts"/>
-/// <reference path="../DBAction/CursorAction/Filter.ts"/>
-/// <reference path="../DBAction/CursorAction/Step.ts"/>
+import IQueryable = module('./IQueryable');
+import IModifiable = module('./IModifiable');
+
+import ActionExecutor = module('../DBAction/ActionExecutor');
+import CursorAction = module('./IModifiable');
+import Take = module('../DBAction/CursorAction/Take');
+import ToArray = module('../DBAction/ActionCompleter/ToArray');
+import ToObject = module('../DBAction/ActionCompleter/ToObject');
+import Unique = module('../DBAction/DirectionModifier/Unique');
+import Only = module('../DBAction/RangeModifier/Only');
+import InRange = module('../DBAction/RangeModifier/InRange');
+import Reverse = module('../DBAction/DirectionModifier/Reverse');
+import Skip = module('../DBAction/CursorAction/Skip');
+import Filter = module('../DBAction/CursorAction/Filter');
+import Step = module('../DBAction/CursorAction/Step');
 
 declare var Q: any;
-module Store {
-    export class QueryableStore implements Store.IQueryable {
-        private _dbActionExecutor: DBAction.ActionExecutor;
-        private _nativeObjectStore;
 
-        constructor(transaction, objectStore) {
-            this._nativeObjectStore = objectStore;
-            this._dbActionExecutor = new DBAction.ActionExecutor(transaction, objectStore);
-        }
+export class QueryableStore implements IQueryable.IQueryable {
+    private _dbActionExecutor: ActionExecutor.ActionExecutor;
+    private _nativeObjectStore;
 
-        get (key) {
-            var defered = Q.defer();
-            var request = this._nativeObjectStore.get(key)
+    constructor(transaction, objectStore) {
+        this._nativeObjectStore = objectStore;
+        this._dbActionExecutor = new ActionExecutor.ActionExecutor(transaction, objectStore);
+    }
 
-            request.onsuccess = (evt: any) => {
-                defered.resolve(evt.target.result);
-            };
+    get (key) {
+        var defered = Q.defer();
+        var request = this._nativeObjectStore.get(key)
 
-            request.onerror = defered.reject;
+        request.onsuccess = (evt: any) => {
+            defered.resolve(evt.target.result);
+        };
 
-            return defered.promise;
-        }
+        request.onerror = defered.reject;
 
-        skip(count: number) {
-            this._dbActionExecutor.addCursorAction(new DBAction.Skip(count));
-            return this;
-        }
+        return defered.promise;
+    }
 
-        take(count: number) {
-            this._dbActionExecutor.addCursorAction(new DBAction.Take(count));
-            return this;
-        }
+    skip(count: number) {
+        this._dbActionExecutor.addCursorAction(new Skip.Skip(count));
+        return this;
+    }
 
-        filter(filter: Function) {
-            this._dbActionExecutor.addCursorAction(new DBAction.Filter(filter));
-            return this;
-        }
+    take(count: number) {
+        this._dbActionExecutor.addCursorAction(new Take.Take(count));
+        return this;
+    }
 
-        step(step: number) {
-            this._dbActionExecutor.addCursorAction(new DBAction.Step(step));
-            return this;
-        }
+    filter(filter: Function) {
+        this._dbActionExecutor.addCursorAction(new Filter.Filter(filter));
+        return this;
+    }
 
-        only(key: any) {
-            this._dbActionExecutor.addCursorModifier(new DBAction.Only(key));
-            return this;
-        }
+    step(step: number) {
+        this._dbActionExecutor.addCursorAction(new Step.Step(step));
+        return this;
+    }
 
-        unique() {
-            this._dbActionExecutor.addCursorModifier(new DBAction.Unique());
-            return this;
-        }
+    only(key: any) {
+        this._dbActionExecutor.addCursorModifier(new Only.Only(key));
+        return this;
+    }
 
-        inRange(lower, upper, lowerOpen, upperOpen) {
-            this._dbActionExecutor.addCursorModifier(new DBAction.InRange(lower, upper, lowerOpen, upperOpen));
-            return this;
-        }
+    unique() {
+        this._dbActionExecutor.addCursorModifier(new Unique.Unique());
+        return this;
+    }
 
-        reverse() {
-            this._dbActionExecutor.addCursorModifier(new DBAction.Reverse());
-            return this;
-        }
+    inRange(lower, upper, lowerOpen, upperOpen) {
+        this._dbActionExecutor.addCursorModifier(new InRange.InRange(lower, upper, lowerOpen, upperOpen));
+        return this;
+    }
 
-        toArray() {
-            this._dbActionExecutor.addActionCompleter(new DBAction.ToArray());
-            return this._dbActionExecutor.getResultPromise();
-        }
+    reverse() {
+        this._dbActionExecutor.addCursorModifier(new Reverse.Reverse());
+        return this;
+    }
 
-        toObject() {
-            this._dbActionExecutor.addActionCompleter(new DBAction.ToObject());
-            return this._dbActionExecutor.getResultPromise();
-        }
+    toArray() {
+        this._dbActionExecutor.addActionCompleter(new ToArray.ToArray());
+        return this._dbActionExecutor.getResultPromise();
+    }
+
+    toObject() {
+        this._dbActionExecutor.addActionCompleter(new ToObject.ToObject());
+        return this._dbActionExecutor.getResultPromise();
     }
 }

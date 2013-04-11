@@ -1,112 +1,109 @@
-/// <reference path="./CursorOptions.ts"/>
+import CursorOptions = module('./CursorOptions');
 
-module DBAction {
-    declare var Q: any;
+declare var Q: any;
 
-    export class ActionExecutor {
+export class ActionExecutor {
+    private _resultList;
+    private _resultDefer;
+    private _cursor;
+    private _objectStore;
+    private _transaction: IDBTransaction;
+    private _cursorModifiers: any[];
+    private _actionCompleter = null;
+    private _cursorActions: any[];
 
-        private _resultList;
-        private _resultDefer;
-        private _cursor;
-        private _objectStore;
-        private _transaction: IDBTransaction;
-        private _cursorModifiers: any[];
-        private _actionCompleter = null;
-        private _cursorActions: any[];
+    constructor(transaction: IDBTransaction, objectStore: IDBObjectStore) {
+        this._resultDefer = Q.defer();
+        this._transaction = transaction;
+        this._cursorModifiers = [];
+        this._resultList = [];
+        this._cursorActions = [];
+        this._objectStore = objectStore;
+    }
 
-        constructor(transaction: IDBTransaction, objectStore: IDBObjectStore) {
-            this._resultDefer = Q.defer();
-            this._transaction = transaction;
-            this._cursorModifiers = [];
-            this._resultList = [];
-            this._cursorActions = [];
-            this._objectStore = objectStore;
+    addCursorModifier(cursorModifier) {
+        this._cursorModifiers.push(cursorModifier);
+    }
+
+    addCursorAction(cursorAction) {
+        this._cursorActions.push(cursorAction);
+    }
+
+    addActionCompleter(completer) {
+        if (!this._actionCompleter) {
+            this._actionCompleter = completer;
+            this._transaction.oncomplete = (ev) => {
+                this._actionCompleter.onSuccess(this._resultList, this._resultDefer);
+            };
+
+            this._transaction.onabort = (ev) => {
+                this._actionCompleter.onAbort(ev, this._resultDefer);
+            };
+
+            this._transaction.onerror = (ev) => {
+                this._actionCompleter.onError(ev, this._resultDefer);
+            };
+
+            this._executeQuery();
+        } else {
+            throw 'Only one completer per query allowed';
         }
+    }
 
-        addCursorModifier(cursorModifier) {
-            this._cursorModifiers.push(cursorModifier);
-        }
+    getResultPromise() {
+        return this._resultDefer.promise;
+    }
 
-        addCursorAction(cursorAction) {
-            this._cursorActions.push(cursorAction);
-        }
+    private _openCursor(): IDBRequest {
+        var cursorOptions = new CursorOptions.CursorOptions();
+        this._cursorModifiers.forEach((modifier: any) => {
+            modifier.execute(cursorOptions);
+        });
 
-        addActionCompleter(completer) {
-            if (!this._actionCompleter) {
-                this._actionCompleter = completer;
-                this._transaction.oncomplete = (ev) => {
-                    this._actionCompleter.onSuccess(this._resultList, this._resultDefer);
-                };
+        return this._objectStore.openCursor(cursorOptions.cursorRangeValue, cursorOptions.cursorDirectionValue);
+    }
 
-                this._transaction.onabort = (ev) => {
-                    this._actionCompleter.onAbort(ev, this._resultDefer);
-                };
+    private _createQuaryAction() {
+        // cursorAction.method: continue, advance, stop
+        // resultAction: take, skip
+        return { cursorAction: { method: 'continue', arg: undefined }, resultAction: 'take' };
+    }
 
-                this._transaction.onerror = (ev) => {
-                    this._actionCompleter.onError(ev, this._resultDefer);
-                };
+    private _executeQuery() {
+        // Create cursor
+        var cursorRequest: any = this._openCursor();
 
-                this._executeQuery();
-            } else {
-                throw 'Only one completer per query allowed';
-            }
-        }
-
-        getResultPromise() {
-            return this._resultDefer.promise;
-        }
-
-        private _openCursor(): IDBRequest {
-            var cursorOptions = new DBAction.CursorOptions();
-            this._cursorModifiers.forEach((modifier: any) => {
-                modifier.execute(cursorOptions);
-            });
-
-            return this._objectStore.openCursor(cursorOptions.cursorRangeValue, cursorOptions.cursorDirectionValue);
-        }
-
-        private _createQuaryAction() {
-            // cursorAction.method: continue, advance, stop
-            // resultAction: take, skip
-            return { cursorAction: { method: 'continue', arg: undefined }, resultAction: 'take' };
-        }
-
-        private _executeQuery() {
-            // Create cursor
-            var cursorRequest: any = this._openCursor();
-
-            cursorRequest.onsuccess = (e) => {
-                var queryAction = this._createQuaryAction();
-                var result = e.target.result;
+        cursorRequest.onsuccess = (e) => {
+            var queryAction = this._createQuaryAction();
+            var result = e.target.result;
 
 
-                if (result) {
-                    this._cursorActions.every((action) => {
-                        return action.execute(queryAction, result.value, this._resultList);
-                    });
+            if (result) {
+                this._cursorActions.every((action) => {
+                    return action.execute(queryAction, result.value, this._resultList);
+                });
 
-                    if (queryAction.resultAction == 'take') {
-                        this._resultList.push(result.value);
-                    }
-                    if (queryAction.cursorAction.method !== 'stop') {
-                        if (queryAction.cursorAction.method === 'continue') {
-                            // continue does not like parameters and closure compiler does not like continue :D
-                            result['continue']();
-                        } else {
-                            result.advance(queryAction.cursorAction.arg);
-                        }
-                    }
-
+                if (queryAction.resultAction == 'take') {
+                    this._resultList.push(result.value);
                 }
-            };
+                if (queryAction.cursorAction.method !== 'stop') {
+                    if (queryAction.cursorAction.method === 'continue') {
+                        // continue does not like parameters and closure compiler does not like continue :D
+                        result['continue']();
+                    } else {
+                        result.advance(queryAction.cursorAction.arg);
+                    }
+                }
 
-            cursorRequest.onerror = (error) => {
-                console.log(error);
-            };
+            }
+        };
 
-            cursorRequest.onabort = (error) => {
-                console.log(error);
-            };
-        }
+        cursorRequest.onerror = (error) => {
+            console.log(error);
+        };
+
+        cursorRequest.onabort = (error) => {
+            console.log(error);
+        };
     }
 }

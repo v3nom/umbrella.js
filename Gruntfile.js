@@ -9,9 +9,10 @@ module.exports = function (grunt) {
         pkg: grunt.file.readJSON('package.json'),
         typescript: {
             base: {
-                src: 'src/Umbrella/init.ts',
-                dest: 'build/umbrella.js',
+                src: 'src/Umbrella/**/*',
+                dest: 'tmp/',
                 options: {
+                    module: 'amd',
                     target: 'es5'
                 }
             }
@@ -23,31 +24,44 @@ module.exports = function (grunt) {
                 browsers: ['Firefox']
             }
         },
-        closurecompiler: {
-            optimize: {
-                files: {
-                    "build/umbrella.min.js": [path.resolve('build/umbrella.js')]
-                },
+        requirejs: {
+            compile: {
                 options: {
-                    "compilation_level": "SIMPLE_OPTIMIZATIONS"
+                    baseUrl: 'tmp/src/',
+                    name: 'Umbrella/almond',
+                    include: ['Umbrella/init'],
+                    insertRequire: ['Umbrella/init'],
+                    out: 'build/umbrella.js',
+                    preserveLicenseComments: false,
+                    wrap: {
+                        start: "(function (root, factory) {if (typeof define === 'function' && define.amd) {define(factory);} else {root.Umbrella = factory();}}(this, function () {",
+                        end: "return require('Umbrella/init').Init;}));"
+                    },
+                    optimize: 'uglify'
                 }
             }
+        },
+        copy: {
+            main: {
+                files: [
+                    { src: 'src/Umbrella/almond.js', dest: 'tmp/' }
+                ]
+            }
+        },
+        rm: {
+            tmp: 'tmp/'
         }
     });
 
     grunt.loadNpmTasks('grunt-typescript');
     grunt.loadNpmTasks('grunt-karma');
-    grunt.loadNpmTasks('grunt-closurecompiler');
+    grunt.loadNpmTasks('grunt-contrib-requirejs');
+    grunt.loadNpmTasks('grunt-contrib-copy');
 
-    grunt.registerTask('wrapFn', 'Wrap library in a function', function () {
-        var fileName = path.resolve('build/umbrella.js');
-        var fileStart = '(function(){';
-        var fileEnd = '})()';
-        var file = grunt.file.read(fileName);
-        var newFile = [fileStart, file, fileEnd];
-        grunt.file.write(fileName, newFile.join(''));
+    grunt.registerMultiTask('rm', 'Remove file', function () {
+        grunt.file.delete(this.data);
     });
 
-    grunt.registerTask('default', ['typescript', 'wrapFn', 'closurecompiler', 'karma']);
+    grunt.registerTask('default', ['typescript', 'copy', 'requirejs', 'rm:tmp', 'karma']);
     grunt.registerTask('test', ['karma']);
 };

@@ -1,30 +1,27 @@
-/// <reference path="DB/Database.ts" />
+import Database = module('./DB/Database');
 
-module Init {
-    declare var window: any;
+declare var window: any;
 
-    window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-    window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
-    window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
+window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
 
-    var databases: DB.Database[] = [];
+export class Init {
+    static databases: Database.Database[] = [];
 
-    function open(dbName: string, version: any, entityDefinition: any) {
+    static open(dbName: string, version: any, entityDefinition: any) {
         // Check if db already open and compare versions, close and recreate if new version
-        var database = databases.filter(function (d) {
+        var database = Init.databases.filter(function (d) {
             return d.dbName === dbName && d.dbVersion === d.dbVersion;
         })[0];
 
         if (!database) {
-            database = new DB.Database(dbName, version, entityDefinition);
+            database = new Database.Database(dbName, version, entityDefinition);
             database.open();
-            databases.push(database);
+            Init.databases.push(database);
         }
 
         // Return db ready promise
         return database.ready;
     };
-
-    window['Umbrella'] = {};
-    window['Umbrella'].open = open;
 }

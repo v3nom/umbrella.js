@@ -10,7 +10,7 @@ basePath = '';
 files = [
   JASMINE,
   JASMINE_ADAPTER,
-  { pattern: 'lib/**/*.js', included: true },
+  { pattern: 'lib/q.min.js', included: true },
   { pattern: 'build/umbrella.js', included: true },
   { pattern: 'test/**/*.test.js', included: true }
 ];
