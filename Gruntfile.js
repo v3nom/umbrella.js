@@ -9,7 +9,7 @@ module.exports = function (grunt) {
         pkg: grunt.file.readJSON('package.json'),
         typescript: {
             base: {
-                src: 'src/Umbrella/**/*',
+                src: 'src/Umbrella/**/*.ts',
                 dest: 'tmp/',
                 options: {
                     module: 'amd',
