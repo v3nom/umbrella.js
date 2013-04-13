@@ -111,5 +111,342 @@ describe('UmbrellaJS query specification', function () {
         waitsFor(function () {
             return flag;
         }, 1000);
-    })
+    });
+
+    it('should support take call', function () {
+        var flag = false;
+        runs(function () {
+            testDB.store('customer', true).take(1).toArray().then(function (result) {
+                expect(result.length).toBe(1);
+                expect(result[0]).toBeDefined();
+                flag = true;
+            }, function (error) {
+                expect(false).toBeTruthy();
+                flag = true;
+            });
+        });
+
+        waitsFor(function () {
+            return flag;
+        }, 1000);
+    });
+
+    it('should support skip call', function () {
+        var flag = false;
+        runs(function () {
+            testDB.store('item', true).skip(2).toArray().then(function (result) {
+                expect(result.length).toBe(7);
+                expect(result[0].id).toBe(3);
+                expect(result[1].id, 4);
+                flag = true;
+            }, function (error) {
+                expect(false).toBeTruthy();
+                flag = true;
+            });
+        });
+
+        waitsFor(function () {
+            return flag;
+        }, 1000);
+    });
+
+    it('should support take(1).skip(1) call', function () {
+        var flag = false;
+        runs(function () {
+            testDB.store('item', true).take(1).skip(1).toArray().then(function (result) {
+                expect(result.length).toBe(8);
+                expect(result[0].id).toBe(1);
+                expect(result[1].id).toBe(3);
+                flag = true;
+            }, function (error) {
+                expect(false).toBeTruthy();
+                flag = true;
+            });
+        });
+
+        waitsFor(function () {
+            return flag;
+        }, 1000);
+    });
+
+    it('should support take(1).skip(1).take(1) call', function () {
+        var flag = false;
+        runs(function () {
+            testDB.store('item', true).take(1).skip(1).take(1).toArray().then(function (result) {
+                expect(result.length).toBe(2);
+                expect(result[0].id).toBe(1);
+                expect(result[1].id).toBe(3);
+                flag = true;
+            }, function (error) {
+                expect(false).toBeTruthy();
+                flag = true;
+            });
+        });
+
+        waitsFor(function () {
+            return flag;
+        }, 1000);
+    });
+
+    it('should support filter call', function () {
+        var flag = false;
+        runs(function () {
+            var filter = function (item) {
+                return item.title[0] === 'B';
+            };
+            testDB.store('item', true).filter(filter).toArray().then(function (result) {
+                expect(result.length).toBe(2);
+                expect(result[0].id).toBe(6);
+                expect(result[1].id).toBe(7);
+                flag = true;
+            }, function (error) {
+                expect(false).toBeTruthy();
+                flag = true;
+            });
+        });
+
+        waitsFor(function () {
+            return flag;
+        }, 1000);
+    });
+
+
+    it('should support filter().skip(1) call', function () {
+        var flag = false;
+        runs(function () {
+            var filter = function (item) {
+                return item.title[0] === 'B';
+            };
+            testDB.store('item', true).filter(filter).skip(1).toArray().then(function (result) {
+                expect(result.length).toBe(1);
+                expect(result[0].id).toBe(7);
+                flag = true;
+            }, function (error) {
+                expect(false).toBeTruthy();
+                flag = true;
+            });
+        });
+
+        waitsFor(function () {
+            return flag;
+        }, 1000);
+    });
+
+    it('should support filter().take(1) call', function () {
+        var flag = false;
+        runs(function () {
+            var filter = function (item) {
+                return item.title[0] === 'B';
+            };
+            testDB.store('item', true).filter(filter).take(1).toArray().then(function (result) {
+                expect(result.length).toBe(1);
+                expect(result[0].id).toBe(6);
+                flag = true;
+            }, function (error) {
+                expect(false).toBeTruthy();
+                flag = true;
+            });
+        });
+
+        waitsFor(function () {
+            return flag;
+        }, 1000);
+    });
+
+    it('should support step(2) call', function () {
+        var flag = false;
+        runs(function () {
+            testDB.store('item', true).step(2).toArray().then(function (result) {
+                expect(result.length).toBe(5);
+                expect(result[0].id).toBe(1);
+                expect(result[4].id).toBe(9);
+                flag = true;
+            }, function (error) {
+                expect(false).toBeTruthy();
+                flag = true;
+            });
+        });
+
+        waitsFor(function () {
+            return flag;
+        }, 1000);
+    });
+
+    it('should support step(2).filter().take(1) call', function () {
+        var flag = false;
+        runs(function () {
+            var filter = function (item) {
+                return item.title[0] === 'B';
+            };
+            testDB.store('item', true).step(2).filter(filter).take(1).toArray().then(function (result) {
+                expect(result.length).toBe(1);
+                expect(result[0].id).toBe(7);
+                flag = true;
+            }, function (error) {
+                expect(false).toBeTruthy();
+                flag = true;
+            });
+        });
+
+        waitsFor(function () {
+            return flag;
+        }, 1000);
+    });
+
+    it('should support only(1) call', function () {
+        var flag = false;
+        runs(function () {
+            testDB.store('item', true).only(1).toArray().then(function (result) {
+                expect(result.length).toBe(1);
+                expect(result[0].title).toBe('Toothpaste');
+                flag = true;
+            }, function (error) {
+                expect(false).toBeTruthy();
+                flag = true;
+            });
+        });
+
+        waitsFor(function () {
+            return flag;
+        }, 1000);
+    });
+
+    it('should support inRange(3,6) call', function () {
+        var flag = false;
+        runs(function () {
+            testDB.store('item', true).inRange(3, 6).toArray().then(function (result) {
+                expect(result.length).toBe(4);
+                flag = true;
+            }, function (error) {
+                expect(false).toBeTruthy();
+                flag = true;
+            });
+        });
+
+        waitsFor(function () {
+            return flag;
+        }, 1000);
+    });
+
+    it('should support inRange(3,6, true, true) call', function () {
+        var flag = false;
+        runs(function () {
+            testDB.store('item', true).inRange(3, 6, true, true).toArray().then(function (result) {
+                expect(result.length).toBe(2);
+                flag = true;
+            }, function (error) {
+                expect(false).toBeTruthy();
+                flag = true;
+            });
+        });
+
+        waitsFor(function () {
+            return flag;
+        }, 1000);
+    });
+
+    it('should support inRange(3,6, true) call', function () {
+        var flag = false;
+        runs(function () {
+            testDB.store('item', true).inRange(3, 6, true).toArray().then(function (result) {
+                expect(result.length).toBe(3);
+                flag = true;
+            }, function (error) {
+                expect(false).toBeTruthy();
+                flag = true;
+            });
+        });
+
+        waitsFor(function () {
+            return flag;
+        }, 1000);
+    });
+
+    it('should support inRange(null,6) call', function () {
+        var flag = false;
+        runs(function () {
+            testDB.store('item', true).inRange(null, 6).toArray().then(function (result) {
+                expect(result.length).toBe(6);
+                flag = true;
+            }, function (error) {
+                expect(false).toBeTruthy();
+                flag = true;
+            });
+        });
+
+        waitsFor(function () {
+            return flag;
+        }, 1000);
+    });
+
+    it('should support inRange(null,6).toObject() call', function () {
+        var flag = false;
+        runs(function () {
+            testDB.store('item', true).inRange(null, 6).toObject().then(function (result) {
+                expect(result).toBeDefined();
+                expect(result.id).toBe(1);
+                flag = true;
+            }, function (error) {
+                expect(false).toBeTruthy();
+                flag = true;
+            });
+        });
+
+        waitsFor(function () {
+            return flag;
+        }, 1000);
+    });
+
+    it('should support inRange(2,true) call', function () {
+        var flag = false;
+        runs(function () {
+            testDB.store('item', true).inRange(2, true).toArray().then(function (result) {
+                expect(result.length).toBe(7);
+                flag = true;
+            }, function (error) {
+                expect(false).toBeTruthy();
+                flag = true;
+            });
+        });
+
+        waitsFor(function () {
+            return flag;
+        }, 1000);
+    });
+
+    it('should support get(2) call', function () {
+        var flag = false;
+        runs(function () {
+            testDB.store('item', true).get(2).then(function (result) {
+                expect(result).toBeDefined();
+                expect(result.title).toBe('Potato chips');
+                flag = true;
+            }, function (error) {
+                expect(false).toBeTruthy();
+                flag = true;
+            });
+        });
+
+        waitsFor(function () {
+            return flag;
+        }, 1000);
+    });
+
+    it('should support index.get("") call', function () {
+        var flag = false;
+        runs(function () {
+            testDB.store('customer', true).index('lastName').get('Gates').then(function (result) {
+                expect(result).toBeDefined();
+                expect(result.id).toBe(1);
+                flag = true;
+            }, function (error) {
+                expect(false).toBeTruthy();
+                flag = true;
+            });
+        });
+
+        waitsFor(function () {
+            return flag;
+        }, 1000);
+    });
 });
