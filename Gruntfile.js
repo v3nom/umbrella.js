@@ -37,7 +37,7 @@ module.exports = function (grunt) {
                         start: "(function (root, factory) {if (typeof define === 'function' && define.amd) {define(factory);} else {root.Umbrella = factory();}}(this, function () {",
                         end: "return require('Umbrella/init').Init;}));"
                     },
-                    optimize: 'uglify'
+                    optimize: 'uglify'//'uglify'
                 }
             }
         },
@@ -62,6 +62,7 @@ module.exports = function (grunt) {
         grunt.file.delete(this.data);
     });
 
-    grunt.registerTask('default', ['typescript', 'copy', 'requirejs', 'rm:tmp', 'karma']);
+    grunt.registerTask('build', ['typescript', 'copy', 'requirejs', 'rm:tmp']);
+    grunt.registerTask('default', ['build', 'test']);
     grunt.registerTask('test', ['karma']);
 };

@@ -8,6 +8,7 @@ export class Database {
     private entityDefinition;
     private _dbName: string;
     private _dbVersion: any;
+    private _isOpen: Boolean;
     /**
         ** Creates new instance of index database representation
         ** @constructor
@@ -16,6 +17,7 @@ export class Database {
         this.entityDefinition = entityDefinition;
         this._dbName = dbName;
         this._dbVersion = version;
+        this._isOpen = false;
     }
 
     get dbName() {
@@ -24,6 +26,10 @@ export class Database {
 
     get dbVersion() {
         return this._dbVersion;
+    }
+
+    get isOpen() {
+        return this._isOpen;
     }
 
     private upgradeHandler(e: any) {
@@ -72,6 +78,7 @@ export class Database {
         request.onupgradeneeded = this.upgradeHandler.bind(this);
         request.onsuccess = (e: any) => {
             this.nativeDBInstance = e.target.result;
+            this._isOpen = true;
             this.databaseReadyDefer.resolve(this);
         };
 
@@ -82,7 +89,10 @@ export class Database {
     }
 
     close() {
-        this.nativeDBInstance.close();
+        if (this._isOpen) {
+            this._isOpen = false;
+            this.nativeDBInstance.close();
+        }
     }
 
     get ready() {
