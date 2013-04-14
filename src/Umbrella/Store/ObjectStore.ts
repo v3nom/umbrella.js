@@ -19,16 +19,22 @@ export class ObjectStore implements IQueryable.IQueryable, IModifiable.IModifiab
 
     add(o) {
         var defered = Q.defer();
-        if (Array.isArray(o)) {
-            o.forEach((e) => {
-                this._nativeObjectStore.add(e);
-            });
-        } else {
-            this._nativeObjectStore.add(o);
+        try {
+            if (Array.isArray(o)) {
+                o.forEach((e) => {
+                    this._nativeObjectStore.add(e);
+                });
+            } else {
+                var addRequest = this._nativeObjectStore.add(o);
+                addRequest.onerror = defered.reject;
+                addRequest.onsuccess = defered.resolve;
+            }
+            this._nativeTransaction.oncomplete = defered.resolve;
+            this._nativeTransaction.onerror = defered.reject;
+            this._nativeTransaction.onabort = defered.reject;
+        } catch (e) {
+            defered.reject(e);
         }
-        this._nativeTransaction.oncomplete = defered.resolve;
-        this._nativeTransaction.onerror = defered.reject;
-        this._nativeTransaction.onabort = defered.reject;
         return defered.promise;
     }
 

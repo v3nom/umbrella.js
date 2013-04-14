@@ -69,10 +69,6 @@ export class Database {
         }
     }
 
-    private deleteObjectStore() {
-
-    }
-
     open() {
         var request: IDBOpenDBRequest = window.indexedDB.open(this.dbName, this.dbVersion);
         request.onupgradeneeded = this.upgradeHandler.bind(this);

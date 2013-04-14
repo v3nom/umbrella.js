@@ -42,13 +42,13 @@ describe('Loading UmbrellaJS library', function () {
 });
 
 describe('UmbrellaJS object manipulation specification', function () {
-    it('should support putting new entities', function () {
+    it('should support adding new entities', function () {
         var flag = false;
         var result;
 
         runs(function () {
-            var promise1 = testDB.store('customer').put(testO1);
-            var promise2 = testDB.store('customer').put(test02);
+            var promise1 = testDB.store('customer').add(testO1);
+            var promise2 = testDB.store('customer').add(test02);
             Q.all([promise1, promise2]).then(function () {
                 flag = true;
                 result = true;
@@ -68,6 +68,23 @@ describe('UmbrellaJS object manipulation specification', function () {
     });
 
     it('should support batch put', function () {
+        var flag = false;
+        runs(function () {
+            testDB.store('item').put(testItems).then(function () {
+                expect(true).toBeTruthy();
+                flag = true;
+            }, function (error) {
+                expect(false).toBeTruthy();
+                flag = true;
+            });
+        });
+
+        waitsFor(function () {
+            return flag;
+        }, 1000);
+    });
+
+    it('should run batch put second time without error', function () {
         var flag = false;
         runs(function () {
             testDB.store('item').put(testItems).then(function () {
@@ -448,5 +465,22 @@ describe('UmbrellaJS query specification', function () {
         waitsFor(function () {
             return flag;
         }, 1000);
+    });
+
+    it('should support deleting the database', function () {
+        var flag = false;
+
+        runs(function () {
+            Umbrella.deleteDatabase('queryTestDB').then(function () {
+                expect(true).toBe(true);
+                flag = true;
+            }, function (e) {
+                flag = true;
+            });
+        });
+
+        waitsFor(function () {
+            return flag;
+        }, 'database should be deleted', 4000);
     });
 });

@@ -26,7 +26,7 @@ describe('Umbrella.open', function () {
         var flag = false;
 
         runs(function () {
-            var dbPromise = Umbrella.open('testDB', '1' + (new Date()).getTime(), entityDefinition);
+            var dbPromise = Umbrella.open('testDB', 1, entityDefinition);
             dbPromise.then(function (db) {
                 expect(db.nativeDBInstance.objectStoreNames.contains('customer')).toBeTruthy();
                 expect(db.nativeDBInstance.objectStoreNames.contains('order')).toBeTruthy();
@@ -47,7 +47,7 @@ describe('Umbrella.open', function () {
         var flag = false;
 
         runs(function () {
-            var dbPromise = Umbrella.open('testDB', '2' + (new Date()).getTime(), entityDefinition2);
+            var dbPromise = Umbrella.open('testDB', 2, entityDefinition2);
             dbPromise.then(function (db) {
                 expect(db.nativeDBInstance.objectStoreNames.contains('customer')).toBeTruthy();
                 expect(db.nativeDBInstance.objectStoreNames.contains('order')).toBeTruthy();
@@ -62,5 +62,24 @@ describe('Umbrella.open', function () {
         waitsFor(function () {
             return flag;
         }, 'database should be created', 4000);
+    });
+
+    it('should support deleting the database', function () {
+        var flag = false;
+
+        runs(function () {
+            Umbrella.deleteDatabase('testDB').then(function () {
+                expect(true).toBe(true);
+                flag = true;
+            }, function (e) {
+                console.log(e);
+                expect(false).toBe(true);
+                flag = true;
+            });
+        });
+
+        waitsFor(function () {
+            return flag;
+        }, 'database should be deleted', 4000);
     });
 });

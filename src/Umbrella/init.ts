@@ -1,6 +1,7 @@
 import Database = module('./DB/Database');
 
 declare var window: any;
+declare var Q: any;
 
 window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
@@ -37,4 +38,20 @@ export class Init {
         // Return db ready promise
         return database.ready;
     };
+
+    static deleteDatabase(name: string) {
+        var defer = Q.defer();
+        this._isOpen = false;
+        Init.databases.forEach(function (db) {
+            if (db.dbName === name) {
+                db.close();
+            }
+        });
+        var deleteRequest = indexedDB.deleteDatabase(name);
+        deleteRequest.onsuccess = defer.resolve;
+        deleteRequest.onerror = defer.reject;
+        deleteRequest.onblocked = defer.reject;
+        deleteRequest.onupgradeneeded = defer.resolve;
+        return defer.promise;
+    }
 }
