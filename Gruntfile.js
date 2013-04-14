@@ -18,14 +18,19 @@ module.exports = function (grunt) {
             }
         },
         karma: {
-            unit: {
+            travis: {
                 configFile: 'karma.conf.js',
                 singleRun: true,
                 browsers: ['Firefox']
+            },
+            dev: {
+                configFile: 'karma.conf.js',
+                singleRun: true,
+                browsers: ['C:/Program Files (x86)/Mozilla Firefox/firefox.exe', 'IE']
             }
         },
         requirejs: {
-            compile: {
+            prod: {
                 options: {
                     baseUrl: 'tmp/src/',
                     name: 'Umbrella/almond',
@@ -37,7 +42,37 @@ module.exports = function (grunt) {
                         start: "(function (root, factory) {if (typeof define === 'function' && define.amd) {define(factory);} else {root.Umbrella = factory();}}(this, function () {",
                         end: "return require('Umbrella/init').Init;}));"
                     },
-                    optimize: 'none'//'uglify'
+                    optimize: 'uglify'//'uglify'
+                }
+            },
+            dev: {
+                options: {
+                    baseUrl: 'tmp/src/',
+                    name: 'Umbrella/almond',
+                    include: ['Umbrella/init'],
+                    insertRequire: ['Umbrella/init'],
+                    out: 'build/umbrella.js',
+                    preserveLicenseComments: false,
+                    wrap: {
+                        start: "(function (root, factory) {if (typeof define === 'function' && define.amd) {define(factory);} else {root.Umbrella = factory();}}(this, function () {",
+                        end: "return require('Umbrella/init').Init;}));"
+                    },
+                    optimize: 'none'
+                }
+            },
+            debug: {
+                options: {
+                    baseUrl: 'tmp/src/',
+                    name: 'Umbrella/almond',
+                    include: ['Umbrella/init'],
+                    insertRequire: ['Umbrella/init'],
+                    out: 'build/umbrella.debug.js',
+                    preserveLicenseComments: false,
+                    wrap: {
+                        start: "(function (root, factory) {if (typeof define === 'function' && define.amd) {define(factory);} else {root.Umbrella = factory();}}(this, function () {",
+                        end: "return require('Umbrella/init').Init;}));"
+                    },
+                    optimize: 'none'
                 }
             }
         },
@@ -62,7 +97,10 @@ module.exports = function (grunt) {
         grunt.file.delete(this.data);
     });
 
-    grunt.registerTask('build', ['typescript', 'copy', 'requirejs', 'rm:tmp']);
+    grunt.registerTask('buildDev', ['typescript', 'copy', 'requirejs:dev', 'rm:tmp']);
+    grunt.registerTask('build', ['typescript', 'copy', 'requirejs:prod', 'requirejs:debug', 'rm:tmp']);
+    grunt.registerTask('test', ['karma:travis']);
+    grunt.registerTask('testDev', ['karma:dev']);
+
     grunt.registerTask('default', ['build', 'test']);
-    grunt.registerTask('test', ['karma']);
 };
