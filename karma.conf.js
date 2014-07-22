@@ -2,7 +2,7 @@ module.exports = function(config) {
   config.set({
     frameworks: ['jasmine'],
     files: [{
-      pattern: 'lib/q.min.js',
+      pattern: 'lib/q.js',
       included: true
     }, {
       pattern: 'build/umbrella.js',

@@ -9,7 +9,8 @@ var CrudEntityDefinition = {
   },
   item: {
     key: 'id',
-    indexes: []
+    indexes: [],
+    autoIncrement: true
   }
 };
 
@@ -111,6 +112,35 @@ describe('UmbrellaJS crud operations', function() {
       Q.all([promise1]).then(function() {
         crudDB.store('customer', true).toArray().then(function(result) {
           expect(result.length).toBe(0);
+          flag = true;
+        });
+      }, function() {
+        expect(false).toBeTruthy();
+        flag = true;
+      });
+    });
+
+    waitsFor(function() {
+      return flag;
+    }, 3000);
+  });
+
+  it('should support autoIncrement', function() {
+    var flag = false;
+    var result;
+
+    runs(function() {
+      var promise1 = crudDB.store('item').add([{
+        itemName: 'item1'
+      }, {
+        itemName: 'item2'
+      }]);
+
+      Q.all([promise1]).then(function() {
+        crudDB.store('item', true).toArray().then(function(result) {
+          expect(result[0].id).toBe(1);
+          expect(result[1].id).toBe(2);
+          expect(result.length).toBe(2);
           flag = true;
         });
       }, function() {

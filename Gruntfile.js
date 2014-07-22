@@ -42,7 +42,7 @@ module.exports = function (grunt) {
                         start: "(function (root, factory) {if (typeof define === 'function' && define.amd) {define(factory);} else {root.Umbrella = factory();}}(this, function () {",
                         end: "return require('Umbrella/init').Init;}));"
                     },
-                    optimize: 'uglify'//'uglify'
+                    optimize: 'uglify'
                 }
             },
             dev: {
