@@ -1,8 +1,8 @@
-import CursorOptions = module('./CursorOptions');
+import CursorOptions = require('./CursorOptions');
 
 declare var Q: any;
 
-export class ActionExecutor {
+class ActionExecutor {
     private _resultList;
     private _resultDefer;
     private _cursor;
@@ -55,7 +55,7 @@ export class ActionExecutor {
     }
 
     private _openCursor(): IDBRequest {
-        var cursorOptions = new CursorOptions.CursorOptions();
+        var cursorOptions = new CursorOptions();
         this._cursorModifiers.forEach((modifier: any) => {
             modifier.execute(cursorOptions);
         });
@@ -107,3 +107,4 @@ export class ActionExecutor {
         };
     }
 }
+export = ActionExecutor;

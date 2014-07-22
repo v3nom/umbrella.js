@@ -1,4 +1,4 @@
-export class ToArray {
+class ToArray {
     onSuccess(resultList, deferedResult) {
         deferedResult.resolve(resultList);
     }
@@ -13,3 +13,4 @@ export class ToArray {
         console.log(error);
     }
 }
+export = ToArray;

@@ -1,4 +1,4 @@
-export interface IQueryable {
+interface IQueryable {
     take(count: number);
     skip(count: number);
     filter(filter: Function);
@@ -11,3 +11,5 @@ export interface IQueryable {
     toObject();
     get (key: any);
 }
+
+export = IQueryable;

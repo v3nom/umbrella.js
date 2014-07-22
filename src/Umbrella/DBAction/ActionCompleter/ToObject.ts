@@ -1,4 +1,4 @@
-export class ToObject {
+class ToObject {
     onSuccess(resultList, deferedResult) {
         deferedResult.resolve(resultList[0]);
     }
@@ -13,3 +13,4 @@ export class ToObject {
         console.log(error);
     }
 }
+export = ToObject;

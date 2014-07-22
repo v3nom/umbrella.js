@@ -1,4 +1,4 @@
-import Database = module('./DB/Database');
+import Database = require('./DB/Database');
 
 declare var window: any;
 declare var Q: any;
@@ -14,15 +14,17 @@ export class Init {
         var database;
         var newDatabaseCache = [];
         // Check if db already open and compare versions, close and recreate if new version
-        Init.databases.forEach(function (db) {
-            if (db.dbName === dbName) {
+        Init.databases.forEach(function(db) {
+            var isOpen = db.isOpen;
+
+            if (isOpen && db.dbName === dbName) {
                 if (db.dbVersion === version) {
                     database = db;
                 } else {
                     db.close();
                 }
             }
-            if (db.isOpen) {
+            if (isOpen) {
                 newDatabaseCache.push(db);
             }
         });
@@ -37,21 +39,25 @@ export class Init {
 
         // Return db ready promise
         return database.ready;
-    };
+    }
 
     static deleteDatabase(name: string) {
         var defer = Q.defer();
-        this._isOpen = false;
-        Init.databases.forEach(function (db) {
-            if (db.dbName === name) {
-                db.close();
-            }
-        });
+        Init.closeDatabase(name);
+
         var deleteRequest = indexedDB.deleteDatabase(name);
         deleteRequest.onsuccess = defer.resolve;
         deleteRequest.onerror = defer.reject;
         deleteRequest.onblocked = defer.reject;
         deleteRequest.onupgradeneeded = defer.resolve;
         return defer.promise;
+    }
+
+    static closeDatabase(name: string) {
+        Init.databases.forEach(function(db) {
+            if (db.dbName === name) {
+                db.close();
+            }
+        });
     }
 }

@@ -1,9 +1,10 @@
-import CursorOptions = module('../CursorOptions');
-export class Unique {
+import CursorOptions = require('../CursorOptions');
+class Unique {
     constructor() {
     }
 
-    execute(cursorOptions: CursorOptions.CursorOptions) {
+    execute(cursorOptions: CursorOptions) {
         cursorOptions.cursorDirection.unique = true;
     }
 }
+export = Unique;

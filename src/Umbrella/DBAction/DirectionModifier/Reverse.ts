@@ -1,9 +1,10 @@
-import CursorOptions = module('../CursorOptions');
-export class Reverse {
+import CursorOptions = require('../CursorOptions');
+class Reverse {
     constructor() {
     }
 
-    execute(cursorOptions: CursorOptions.CursorOptions) {
+    execute(cursorOptions:CursorOptions) {
         cursorOptions.cursorDirection.reverse = true;
     }
 }
+export = Reverse;

@@ -1,4 +1,4 @@
-export class CursorRange {
+class CursorRange {
     private _keyRange: IDBKeyRange;
 
     constructor() {
@@ -14,3 +14,5 @@ export class CursorRange {
         return this._keyRange;
     }
 }
+
+export = CursorRange;

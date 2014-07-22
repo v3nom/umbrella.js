@@ -60,7 +60,7 @@ describe('UmbrellaJS object manipulation specification', function () {
 
         waitsFor(function () {
             return flag;
-        }, 1000);
+        }, 2000);
 
         runs(function () {
             expect(result).toBe(true);

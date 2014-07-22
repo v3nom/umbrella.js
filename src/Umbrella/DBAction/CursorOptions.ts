@@ -1,14 +1,14 @@
-import CursorDirection = module('./CursorDirection');
-import CursorRange = module('./CursorRange');
+import CursorDirection = require('./CursorDirection');
+import CursorRange = require('./CursorRange');
 
 
-export class CursorOptions {
-    private _cursorDirection: CursorDirection.CursorDirection;
-    private _cursorRange: CursorRange.CursorRange;
+class CursorOptions {
+    private _cursorDirection: CursorDirection;
+    private _cursorRange: CursorRange;
 
     constructor() {
-        this._cursorDirection = new CursorDirection.CursorDirection();
-        this._cursorRange = new CursorRange.CursorRange();
+        this._cursorDirection = new CursorDirection();
+        this._cursorRange = new CursorRange();
     }
 
     get cursorDirection() {
@@ -27,3 +27,4 @@ export class CursorOptions {
         return this._cursorRange.getValue();
     }
 }
+export = CursorOptions;

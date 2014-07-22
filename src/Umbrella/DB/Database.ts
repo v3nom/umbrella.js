@@ -1,4 +1,4 @@
-import ObjectStore = module('../Store/ObjectStore');
+import ObjectStore = require('../Store/ObjectStore');
 declare var Q: any;
 
 export class Database {

@@ -26,7 +26,7 @@ module.exports = function (grunt) {
             dev: {
                 configFile: 'karma.conf.js',
                 singleRun: true,
-                browsers: ['C:/Program Files (x86)/Mozilla Firefox/firefox.exe', 'IE']
+                browsers:['Chrome','Firefox']
             }
         },
         requirejs: {
@@ -100,7 +100,7 @@ module.exports = function (grunt) {
     grunt.registerTask('buildDev', ['typescript', 'copy', 'requirejs:dev', 'rm:tmp']);
     grunt.registerTask('build', ['typescript', 'copy', 'requirejs:prod', 'requirejs:debug', 'rm:tmp']);
     grunt.registerTask('test', ['karma:travis']);
-    grunt.registerTask('testDev', ['karma:dev']);
+    grunt.registerTask('testDev', ['buildDev','karma:dev']);
 
     grunt.registerTask('default', ['build', 'test']);
 };

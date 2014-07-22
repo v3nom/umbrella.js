@@ -1,6 +1,6 @@
-import ICursorAction = module('./ICursorAction');
+import ICursorAction = require('./ICursorAction');
 
-export class Skip implements ICursorAction.ICursorAction {
+class Skip implements ICursorAction {
 
     private _skipCount: number;
 
@@ -8,7 +8,7 @@ export class Skip implements ICursorAction.ICursorAction {
         this._skipCount = skipCount;
     }
 
-    execute(cursorAction, value, resultList: any[]): bool {
+    execute(cursorAction, value, resultList: any[]): boolean {
         if (this._skipCount > 0) {
             this._skipCount--;
             cursorAction.resultAction = 'skip';
@@ -21,3 +21,4 @@ export class Skip implements ICursorAction.ICursorAction {
         }
     }
 }
+export = Skip;

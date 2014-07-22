@@ -1,9 +1,9 @@
-import QueryableStore = module('./QueryableStore');
-import IQueryable = module('./IQueryable');
-import IModifiable = module('./IModifiable');
+import QueryableStore = require('./QueryableStore');
+import IQueryable = require('./IQueryable');
+import IModifiable = require('./IModifiable');
 
 declare var Q: any;
-export class ObjectStore implements IQueryable.IQueryable, IModifiable.IModifiable {
+export class ObjectStore implements IQueryable, IModifiable {
     private _nativeObjectStore: IDBObjectStore;
     private _nativeTransaction: IDBTransaction;
 

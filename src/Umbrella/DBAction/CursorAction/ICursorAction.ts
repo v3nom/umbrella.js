@@ -1,2 +1,3 @@
-export interface ICursorAction {
+interface ICursorAction {
 }
+export = ICursorAction;

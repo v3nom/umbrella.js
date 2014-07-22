@@ -1,3 +1,4 @@
-export interface IModifiable {
+interface IModifiable {
 
 }
+export = IModifiable;

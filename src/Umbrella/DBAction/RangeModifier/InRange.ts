@@ -1,7 +1,7 @@
-import CursorOptions = module('../CursorOptions');
+import CursorOptions = require('../CursorOptions');
 declare var IDBKeyRange: any;
 
-export class InRange {
+class InRange {
     private _lower;
     private _upper;
     private _lowerOpen;
@@ -14,7 +14,7 @@ export class InRange {
         this._upperOpen = upperOpen;
     }
 
-    execute(cursorOptions: CursorOptions.CursorOptions) {
+    execute(cursorOptions: CursorOptions) {
         var bound;
         // Lower bound
         if (this._lower && (typeof this._upper === 'boolean' || this._upper === undefined)) {
@@ -33,3 +33,4 @@ export class InRange {
         }
     }
 }
+export = InRange;

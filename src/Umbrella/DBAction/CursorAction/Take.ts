@@ -1,5 +1,5 @@
-import ICursorAction = module('./ICursorAction');
-export class Take implements ICursorAction.ICursorAction {
+import ICursorAction = require('./ICursorAction');
+class Take implements ICursorAction {
 
     private _timesToExecute: number;
 
@@ -7,7 +7,7 @@ export class Take implements ICursorAction.ICursorAction {
         this._timesToExecute = count;
     }
 
-    execute(cursorAction, value, resultList: any[]): bool {
+    execute(cursorAction, value, resultList: any[]): boolean {
         if (this._timesToExecute > 0) {
             this._timesToExecute--;
             cursorAction.resultAction = 'take';
@@ -19,3 +19,4 @@ export class Take implements ICursorAction.ICursorAction {
         }
     }
 }
+export = Take;

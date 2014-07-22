@@ -1,30 +1,33 @@
-export class CursorDirection {
+class CursorDirection {
     private _optionMatrix = [['next', 'nextunique'], ['prev', 'prevunique']];
-    private _reverse: number;
-    private _unique: number;
+    private _reverse: boolean;
+    private _unique: boolean;
 
     constructor() {
-        this._reverse = 0;
-        this._unique = 0;
+        this._reverse = false;
+        this._unique = false;
     }
 
-    set reverse(value: bool) {
-        this._reverse = value ? 1 : 0;
+    set reverse(value: boolean) {
+        this._reverse = value;
     }
 
-    set unique(value: bool) {
-        this._unique = value ? 1 : 0;
+    set unique(value: boolean) {
+        this._unique = value;
     }
 
-    get reverse(): bool {
-        return this._reverse === 1;
+    get reverse(): boolean {
+        return this._reverse;
     }
 
-    get unique(): bool {
-        return this._unique === 1;
+    get unique(): boolean {
+        return this._unique;
     }
 
     getValue() {
-        return this._optionMatrix[this._reverse][this._unique];
+        var firstIndex = this._reverse ? 1 : 0;
+        var secondIndex = this._unique ? 1 : 0;
+        return this._optionMatrix[firstIndex][secondIndex];
     }
 }
+export = CursorDirection;

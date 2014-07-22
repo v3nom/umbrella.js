@@ -1,28 +1,28 @@
-import IQueryable = module('./IQueryable');
-import IModifiable = module('./IModifiable');
+import IQueryable = require('./IQueryable');
+import IModifiable = require('./IModifiable');
 
-import ActionExecutor = module('../DBAction/ActionExecutor');
-import CursorAction = module('./IModifiable');
-import Take = module('../DBAction/CursorAction/Take');
-import ToArray = module('../DBAction/ActionCompleter/ToArray');
-import ToObject = module('../DBAction/ActionCompleter/ToObject');
-import Unique = module('../DBAction/DirectionModifier/Unique');
-import Only = module('../DBAction/RangeModifier/Only');
-import InRange = module('../DBAction/RangeModifier/InRange');
-import Reverse = module('../DBAction/DirectionModifier/Reverse');
-import Skip = module('../DBAction/CursorAction/Skip');
-import Filter = module('../DBAction/CursorAction/Filter');
-import Step = module('../DBAction/CursorAction/Step');
+import ActionExecutor = require('../DBAction/ActionExecutor');
+import CursorAction = require('./IModifiable');
+import Take = require('../DBAction/CursorAction/Take');
+import ToArray = require('../DBAction/ActionCompleter/ToArray');
+import ToObject = require('../DBAction/ActionCompleter/ToObject');
+import Unique = require('../DBAction/DirectionModifier/Unique');
+import Only = require('../DBAction/RangeModifier/Only');
+import InRange = require('../DBAction/RangeModifier/InRange');
+import Reverse = require('../DBAction/DirectionModifier/Reverse');
+import Skip = require('../DBAction/CursorAction/Skip');
+import Filter = require('../DBAction/CursorAction/Filter');
+import Step = require('../DBAction/CursorAction/Step');
 
 declare var Q: any;
 
-export class QueryableStore implements IQueryable.IQueryable {
-    private _dbActionExecutor: ActionExecutor.ActionExecutor;
+export class QueryableStore implements IQueryable {
+    private _dbActionExecutor: ActionExecutor;
     private _nativeObjectStore;
 
     constructor(transaction, objectStore) {
         this._nativeObjectStore = objectStore;
-        this._dbActionExecutor = new ActionExecutor.ActionExecutor(transaction, objectStore);
+        this._dbActionExecutor = new ActionExecutor(transaction, objectStore);
     }
 
     get (key) {
@@ -39,52 +39,52 @@ export class QueryableStore implements IQueryable.IQueryable {
     }
 
     skip(count: number) {
-        this._dbActionExecutor.addCursorAction(new Skip.Skip(count));
+        this._dbActionExecutor.addCursorAction(new Skip(count));
         return this;
     }
 
     take(count: number) {
-        this._dbActionExecutor.addCursorAction(new Take.Take(count));
+        this._dbActionExecutor.addCursorAction(new Take(count));
         return this;
     }
 
     filter(filter: Function) {
-        this._dbActionExecutor.addCursorAction(new Filter.Filter(filter));
+        this._dbActionExecutor.addCursorAction(new Filter(filter));
         return this;
     }
 
     step(step: number) {
-        this._dbActionExecutor.addCursorAction(new Step.Step(step));
+        this._dbActionExecutor.addCursorAction(new Step(step));
         return this;
     }
 
     only(key: any) {
-        this._dbActionExecutor.addCursorModifier(new Only.Only(key));
+        this._dbActionExecutor.addCursorModifier(new Only(key));
         return this;
     }
 
     unique() {
-        this._dbActionExecutor.addCursorModifier(new Unique.Unique());
+        this._dbActionExecutor.addCursorModifier(new Unique());
         return this;
     }
 
     inRange(lower, upper, lowerOpen, upperOpen) {
-        this._dbActionExecutor.addCursorModifier(new InRange.InRange(lower, upper, lowerOpen, upperOpen));
+        this._dbActionExecutor.addCursorModifier(new InRange(lower, upper, lowerOpen, upperOpen));
         return this;
     }
 
     reverse() {
-        this._dbActionExecutor.addCursorModifier(new Reverse.Reverse());
+        this._dbActionExecutor.addCursorModifier(new Reverse());
         return this;
     }
 
     toArray() {
-        this._dbActionExecutor.addActionCompleter(new ToArray.ToArray());
+        this._dbActionExecutor.addActionCompleter(new ToArray());
         return this._dbActionExecutor.getResultPromise();
     }
 
     toObject() {
-        this._dbActionExecutor.addActionCompleter(new ToObject.ToObject());
+        this._dbActionExecutor.addActionCompleter(new ToObject());
         return this._dbActionExecutor.getResultPromise();
     }
 }
