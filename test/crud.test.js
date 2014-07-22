@@ -154,6 +154,38 @@ describe('UmbrellaJS crud operations', function() {
     }, 3000);
   });
 
+  it('should support update', function() {
+    var flag = false;
+    var result;
+
+    runs(function() {
+      crudDB.store('customer').add({
+        id: 99,
+        name: 'Testy'
+      });
+      var promise1 = crudDB.store('customer').put({
+        id: 99,
+        name: 'Testy2'
+      })
+
+      Q.all([promise1]).then(function() {
+        crudDB.store('customer', true).toArray().then(function(result) {
+          expect(result[0].id).toBe(99);
+          expect(result[0].name).toBe('Testy2');
+          expect(result.length).toBe(1);
+          flag = true;
+        });
+      }, function() {
+        expect(false).toBeTruthy();
+        flag = true;
+      });
+    });
+
+    waitsFor(function() {
+      return flag;
+    }, 3000);
+  });
+
   it('should support deleting the database', function() {
     var flag = false;
 
