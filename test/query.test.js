@@ -3,6 +3,10 @@ var entityDefinition = {
         key: 'id',
         indexes: [{ name: 'lastName', key: 'lastName', unique: false }]
     },
+    emplopyee: {
+        key: 'id',
+        indexes: [{ name: 'lastName', key: 'lastName', unique: false }]
+    },
     item: {
         key: 'id',
         indexes: []
@@ -11,6 +15,9 @@ var entityDefinition = {
 
 var dbPromise = Umbrella.open('queryTestDB', 13, entityDefinition);
 var testO1 = { id: 1, firstName: 'Tomas', lastName: 'Gates' };
+var test_customer_01 = { id: 3, firstName: 'Peter', lastName: 'Gandalf' };
+var test_customer_02 = { id: 4, firstName: 'Robert', lastName: 'Gandalf' };
+var test_customer_03 = { id: 5, firstName: 'Gabriel', lastName: 'Muresan' };
 var test02 = { id: 2, firstName: 'Jonas', lastName: 'Bobyrot' };
 var testItems = [{ id: 1, title: 'Toothpaste' }, { id: 2, title: 'Potato chips' }, { id: 3, title: 'Milk' }, { id: 4, title: 'Ketchup' },
 { id: 5, title: 'Froyo' }, { id: 6, title: 'Butter' }, { id: 7, title: 'Bread' }, { id: 8, title: 'Ice cream' }, { id: 9, title: 'Pizza' }];
@@ -49,7 +56,10 @@ describe('UmbrellaJS object manipulation specification', function () {
         runs(function () {
             var promise1 = testDB.store('customer').add(testO1);
             var promise2 = testDB.store('customer').add(test02);
-            Q.all([promise1, promise2]).then(function () {
+            var promise3 = testDB.store('emplopyee').add(test_customer_01);
+            var promise4 = testDB.store('emplopyee').add(test_customer_02);
+            var promise5 = testDB.store('emplopyee').add(test_customer_03);
+            Q.all([promise1, promise2, promise3, promise4, promise5]).then(function () {
                 flag = true;
                 result = true;
             }, function () {
@@ -430,7 +440,108 @@ describe('UmbrellaJS query specification', function () {
             return flag;
         }, 1000);
     });
+    // new test methods
+    it('should support index.inRange call test #1', function () {
+        var flag = false;
+        runs(function () {
+            testDB.store('emplopyee', true).index('lastName').inRange('Gandalf', 'Gandalf').toArray().then(function (result) {
+                expect(result.length).toBe(2);
+                expect(result[0].firstName).toBe('Peter');
+                expect(result[1].firstName).toBe('Robert');
+                flag = true;
+            }, function (error) {
+                expect(false).toBeTruthy();
+                flag = true;
+            });
+        });
 
+        waitsFor(function () {
+            return flag;
+        }, 1000);
+    });
+    it('should support index.inRange.skip #1', function () {
+        var flag = false;
+        runs(function () {
+            testDB.store('emplopyee', true).index('lastName').inRange('Gandalf', 'Gandalf').skip(2).toArray().then(function (result) {
+                expect(result.length).toBe(0);
+                flag = true;
+            }, function (error) {
+                expect(false).toBeTruthy();
+                flag = true;
+            });
+        });
+
+        waitsFor(function () {
+            return flag;
+        }, 1000);
+    });
+    it('should support index.inRange.skip #2', function () {
+        var flag = false;
+        runs(function () {
+            testDB.store('emplopyee', true).index('lastName').inRange('Gandalf', 'Gandalf').skip(1).toArray().then(function (result) {
+                expect(result.length).toBe(1);
+                expect(result[0].firstName).toBe('Robert');
+                flag = true;
+            }, function (error) {
+                expect(false).toBeTruthy();
+                flag = true;
+            });
+        });
+
+        waitsFor(function () {
+            return flag;
+        }, 1000);
+    });
+    it('should support index.inRange.skip.take #1', function () {
+        var flag = false;
+        runs(function () {
+            testDB.store('emplopyee', true).index('lastName').inRange('Gandalf', 'Gandalf').skip(1).take(1).toArray().then(function (result) {
+                expect(result.length).toBe(1);
+                expect(result[0].firstName).toBe('Robert');
+                flag = true;
+            }, function (error) {
+                expect(false).toBeTruthy();
+                flag = true;
+            });
+        });
+
+        waitsFor(function () {
+            return flag;
+        }, 1000);
+    });
+    it('should support index.inRange.skip.take #2', function () {
+        var flag = false;
+        runs(function () {
+            testDB.store('emplopyee', true).index('lastName').inRange('Gandalf', 'Gandalf').skip(2).take(1).toArray().then(function (result) {
+                expect(result.length).toBe(0);
+                flag = true;
+            }, function (error) {
+                expect(false).toBeTruthy();
+                flag = true;
+            });
+        });
+
+        waitsFor(function () {
+            return flag;
+        }, 1000);
+    });
+    it('should support index.inRange.skip.take #2', function () {
+        var flag = false;
+        runs(function () {
+            testDB.store('emplopyee', true).index('lastName').inRange('Gandalf', 'Gandalf').skip(1000).take(1).toArray().then(function (result) {
+                expect(result.length).toBe(0);
+                flag = true;
+            }, function (error) {
+                expect(false).toBeTruthy();
+                flag = true;
+            });
+        });
+
+        waitsFor(function () {
+            return flag;
+        }, 1000);
+    });
+    //end new test methods
     it('should support get(2) call', function () {
         var flag = false;
         runs(function () {
