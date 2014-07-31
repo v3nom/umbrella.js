@@ -592,6 +592,6 @@ describe('UmbrellaJS query specification', function () {
 
         waitsFor(function () {
             return flag;
-        }, 'database should be deleted', 4000);
+        }, 'database should be deleted', 10000);
     });
 });
