@@ -28,6 +28,8 @@ module.exports = function(config) {
       }
     },
     captureTimeout: 120000,
+    browserNoActivityTimeout: 30000,
+    browserDisconnectTimeout: 10000,
     browserDisconnectTolerance: 2,
     sauceLabs: {
       testName: 'UmbrellaJS cross-browser unit testing',
