@@ -16,7 +16,7 @@ import Step = require('../DBAction/CursorAction/Step');
 
 declare var Q: any;
 
-export class QueryableStore implements IQueryable {
+class QueryableStore implements IQueryable {
     private _dbActionExecutor: ActionExecutor;
     private _nativeObjectStore;
 
@@ -25,7 +25,7 @@ export class QueryableStore implements IQueryable {
         this._dbActionExecutor = new ActionExecutor(transaction, objectStore);
     }
 
-    get (key) {
+    get(key) {
         var defered = Q.defer();
         var request = this._nativeObjectStore.get(key)
 
@@ -88,3 +88,4 @@ export class QueryableStore implements IQueryable {
         return this._dbActionExecutor.getResultPromise();
     }
 }
+export = QueryableStore;
