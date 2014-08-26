@@ -3,7 +3,7 @@ import IQueryable = require('./IQueryable');
 import IModifiable = require('./IModifiable');
 
 declare var Q: any;
-export class ObjectStore implements IQueryable, IModifiable {
+class ObjectStore implements IQueryable, IModifiable {
     private _nativeObjectStore: IDBObjectStore;
     private _nativeTransaction: IDBTransaction;
 
@@ -92,7 +92,7 @@ export class ObjectStore implements IQueryable, IModifiable {
     }
 
     private _createQueryableStore(objectStore: any = this._nativeObjectStore) {
-        return new QueryableStore.QueryableStore(this._nativeTransaction, objectStore);
+        return new QueryableStore(this._nativeTransaction, objectStore);
     }
 
     take(count: number) {
@@ -135,3 +135,4 @@ export class ObjectStore implements IQueryable, IModifiable {
         return this._createQueryableStore().toObject();
     }
 }
+export = ObjectStore;

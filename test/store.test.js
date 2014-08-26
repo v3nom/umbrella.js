@@ -40,7 +40,7 @@ describe('Umbrella.open', function () {
 
         waitsFor(function () {
             return flag;
-        }, 'database should be created', 4000);
+        }, 'database should be created', 10000);
     });
 
     it('should support database upgrade', function () {
@@ -61,7 +61,7 @@ describe('Umbrella.open', function () {
 
         waitsFor(function () {
             return flag;
-        }, 'database should be created', 4000);
+        }, 'database should be created', 10000);
     });
 
     it('should support deleting the database', function () {
@@ -80,6 +80,6 @@ describe('Umbrella.open', function () {
 
         waitsFor(function () {
             return flag;
-        }, 'database should be deleted', 4000);
+        }, 'database should be deleted', 10000);
     });
 });

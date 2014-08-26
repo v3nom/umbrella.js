@@ -1,4 +1,5 @@
 import ObjectStore = require('../Store/ObjectStore');
+import SharedObjectStore = require('../Store/SharedObjectStore');
 declare var Q: any;
 
 export class Database {
@@ -95,14 +96,24 @@ export class Database {
         return this.databaseReadyDefer.promise;
     }
 
-    getTransaction(storeNames: string[], mode: string) {
+    stores(storeNames: string[], callback: Function) {
+        var defered = Q.defer();
+        var transaction = this.nativeDBInstance.transaction(storeNames, 'readwrite');
+        transaction.onerror = defered.reject;
+        transaction.onabort = defered.reject;
+        var sharedStores = storeNames.map((storeName) => {
+            return new SharedObjectStore(transaction, storeName);
+        });
 
+        callback.apply(transaction, sharedStores);
+        transaction.oncomplete = defered.resolve;
+        return defered.promise;
     }
 
     store(objectStoreName: string, readonly: Boolean = false) {
         // Every operation on object store is executed with a new transaction
         var transaction = this.nativeDBInstance.transaction([objectStoreName], readonly ? 'readonly' : 'readwrite');
-        var objectStore = new ObjectStore.ObjectStore(transaction, objectStoreName);
+        var objectStore = new ObjectStore(transaction, objectStoreName);
         return objectStore;
     }
 }

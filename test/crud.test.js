@@ -156,7 +156,6 @@ describe('UmbrellaJS crud operations', function() {
 
   it('should support update', function() {
     var flag = false;
-    var result;
 
     runs(function() {
       crudDB.store('customer').add({
@@ -186,6 +185,44 @@ describe('UmbrellaJS crud operations', function() {
     }, 3000);
   });
 
+  it('should support multi store add', function() {
+    var flag = false;
+
+    runs(function() {
+      crudDB.stores(['customer', 'item'], function(customerStore, itemStore) {
+        expect(customerStore).toBeDefined();
+        expect(itemStore).toBeDefined();
+        customerStore.add({
+          id: 123,
+          name: 'Bubbles'
+        });
+        itemStore.add({
+          id: 321,
+          brand: 'Sony'
+        });
+      }).then(function() {
+        Q.all([crudDB.store('customer').get(123), crudDB.store('item').get(321)]).then(function(results) {
+          expect(results.length).toBe(2);
+          var customer = results[0];
+          var item = results[1];
+          expect(customer.name).toBe('Bubbles');
+          expect(item.brand).toBe('Sony');
+          flag = true;
+        }, function() {
+          expect(false).toBeTruthy();
+          flag = true;
+        });
+      }, function(err) {
+        expect(false).toBeTruthy();
+        flag = true;
+      });
+    });
+
+    waitsFor(function() {
+      return flag;
+    }, 5000);
+  });
+
   it('should support deleting the database', function() {
     var flag = false;
 
@@ -200,6 +237,6 @@ describe('UmbrellaJS crud operations', function() {
 
     waitsFor(function() {
       return flag;
-    }, 'database should be deleted', 4000);
+    }, 'database should be deleted', 10000);
   });
 });
