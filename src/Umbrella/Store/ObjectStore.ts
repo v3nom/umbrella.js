@@ -74,7 +74,7 @@ class ObjectStore implements IQueryable, IModifiable {
         // 0 is a bad key :evil
         if (key) {
             store['delete'](key);
-        } else {
+        } else if(!Array.isArray(o)) {
             defered.reject('Key was not provided for remove operation or passed object does not contain key');
         }
 
