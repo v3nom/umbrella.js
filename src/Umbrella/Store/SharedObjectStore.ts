@@ -32,8 +32,11 @@ class SharedObjectStore implements IModifiable {
     remove(o) {
         var store: any = this._nativeObjectStore;
         var key;
-
-        if (o && typeof o === 'object') {
+		if (Array.isArray(o)) {
+            o.forEach((e) => {
+                store['delete'](e);
+            });
+        } else if (o && typeof o === 'object') {
             key = o[this._nativeObjectStore.keyPath];
         } else {
             key = o;
@@ -42,7 +45,7 @@ class SharedObjectStore implements IModifiable {
         // 0 is a bad key :evil
         if (key) {
             store['delete'](key);
-        } else {
+        } else if(!Array.isArray(o)) {
             console.error('No key provided. Remove skipped.');
         }
     }

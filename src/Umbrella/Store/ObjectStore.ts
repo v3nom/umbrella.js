@@ -61,8 +61,11 @@ class ObjectStore implements IQueryable, IModifiable {
         var defered = Q.defer();
         var store: any = this._nativeObjectStore;
         var key;
-
-        if (o && typeof o === 'object') {
+        if (Array.isArray(o)) {
+            o.forEach((e) => {
+                store['delete'](e);
+            });
+        } else if (o && typeof o === 'object') {
             key = o[this._nativeObjectStore.keyPath];
         } else {
             key = o;
@@ -71,7 +74,7 @@ class ObjectStore implements IQueryable, IModifiable {
         // 0 is a bad key :evil
         if (key) {
             store['delete'](key);
-        } else {
+        } else if(!Array.isArray(o)) {
             defered.reject('Key was not provided for remove operation or passed object does not contain key');
         }
 

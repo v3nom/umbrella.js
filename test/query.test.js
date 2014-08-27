@@ -21,7 +21,13 @@ var test_customer_03 = { id: 5, firstName: 'Gabriel', lastName: 'Muresan' };
 var test02 = { id: 2, firstName: 'Jonas', lastName: 'Bobyrot' };
 var testItems = [{ id: 1, title: 'Toothpaste' }, { id: 2, title: 'Potato chips' }, { id: 3, title: 'Milk' }, { id: 4, title: 'Ketchup' },
 { id: 5, title: 'Froyo' }, { id: 6, title: 'Butter' }, { id: 7, title: 'Bread' }, { id: 8, title: 'Ice cream' }, { id: 9, title: 'Pizza' }];
-
+var testItemsForRemove = [
+    { id: 100, title: 'Toothpaste' },
+    { id: 101, title: 'Potato chips' },
+    { id: 102, title: 'Milk' },
+    { id: 103, title: 'Ketchup' }
+];
+var testEmployeesForRemove = { id: 100, firstName: '100th', lastName: 'Remover' }
 var testDB;
 
 describe('Loading UmbrellaJS library', function () {
@@ -577,7 +583,126 @@ describe('UmbrellaJS query specification', function () {
             return flag;
         }, 1000);
     });
+    //testing remove by array of keys
+    it('should support remove([1,2,3])', function () {
+        var flag = false;
+        runs(function () {
+            testDB.store('item').put(testItemsForRemove).then(function () {
+                testDB.store('item').toArray().then(function (res) {
+                    initialLength = res.length;
+                    testDB.store('item').remove([100, 101]).then(function () {
+                        testDB.store('item').toArray().then(function (res2) {
+                            expect(res2.length).toBe(initialLength - 2);
+                            testDB.store('item').remove([102, 103]).then(function () {
+                                testDB.store('item').toArray().then(function (res3) {
+                                    expect(res3.length).toBe(initialLength - 4);
+                                    flag = true;
+                                });
+                            });
+                        });
+                    });
+                });
+            }, function (error) {
+                expect(false).toBeTruthy();
+                flag = true;
+            });
+        });
 
+        waitsFor(function () {
+            return flag;
+        }, 2000);
+    });
+    it('should support remove([1,2,3]) even if the indexes are not available or not available', function () {
+        var flag = false;
+        runs(function () {
+            testDB.store('item').toArray().then(function (res) {
+                var initialLength = res.length;
+                testDB.store('item').remove([999, 999]).then(function () {
+                    testDB.store('item').remove([]).then(function () {
+                        testDB.store('item').toArray().then(function (res2) {
+                            expect(res2.length).toBe(initialLength);
+                            flag = true;
+                        });
+                    }, function (error) {
+                        expect(false).toBeTruthy();
+                        flag = true;
+                    });
+
+                }, function (error) {
+                    expect(false).toBeTruthy();
+                    flag = true;
+                });
+            });
+        });
+
+        waitsFor(function () {
+            return flag;
+        }, 2000);
+    });
+    it('should support remove([]) on shared stores', function () {
+        var flag = false;
+        runs(function () {
+            testDB.store('item').toArray().then(function (res) {
+                var itemInitialLength = res.length;
+                testDB.store('emplopyee').toArray().then(function (res2) {
+                    var employeeInitialLength = res2.length;
+                    testDB.stores(['emplopyee', 'item'], function (employeeStore, itemStore) {
+                        itemStore.put(testItemsForRemove);
+                        employeeStore.put(testEmployeesForRemove);
+                        itemStore.remove([100,101,102,103]);
+                        employeeStore.remove([100]);
+                    }).then(function () {
+                        testDB.store('item').toArray().then(function (res) {
+                            expect(res.length).toBe(itemInitialLength);
+                            testDB.store('emplopyee').toArray().then(function (res2) {
+                                expect(res2.length).toBe(employeeInitialLength);
+                                flag = true;
+                            });
+                        });
+                    }, function (err) {
+                        alert("err");
+                    });
+                });
+            });
+        });
+
+        waitsFor(function () {
+            return flag;
+        }, 2000);
+    });
+    it('should support remove([]) on shared stores with some negative tests', function () {
+        var flag = false;
+        runs(function () {
+            testDB.store('item').toArray().then(function (res) {
+                var itemInitialLength = res.length;
+                testDB.store('emplopyee').toArray().then(function (res2) {
+                    var employeeInitialLength = res2.length;
+                    testDB.stores(['emplopyee', 'item'], function (employeeStore, itemStore) {
+                        itemStore.put(testItemsForRemove);
+                        employeeStore.put(testEmployeesForRemove);
+                        itemStore.remove([100, 101, 102, 103, 999, 99999, 999999]);
+                        itemStore.remove([]);
+                        employeeStore.remove([100]);
+                        employeeStore.remove([]);
+                    }).then(function () {
+                        testDB.store('item').toArray().then(function (res) {
+                            expect(res.length).toBe(itemInitialLength);
+                            testDB.store('emplopyee').toArray().then(function (res2) {
+                                expect(res2.length).toBe(employeeInitialLength);
+                                flag = true;
+                            });
+                        });
+                    }, function (err) {
+                        alert("err");
+                    });
+                });
+            });
+        });
+
+        waitsFor(function () {
+            return flag;
+        }, 2000);
+    });
     it('should support deleting the database', function () {
         var flag = false;
 
