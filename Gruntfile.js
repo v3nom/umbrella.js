@@ -21,7 +21,7 @@ module.exports = function (grunt) {
             travis: {
                 configFile: 'karma.conf.js',
                 singleRun: true,
-                browsers: ['SL_Chrome','SL_Firefox','SL_IE_11'],
+                browsers: ['SL_Chrome','SL_Firefox'],
                 reporters:['saucelabs']
             },
             dev: {
