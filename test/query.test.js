@@ -583,27 +583,26 @@ describe('UmbrellaJS query specification', function () {
         }, 1000);
     });
     //testing remove by array of keys
-    it('should support remove([1,2,3])', function () {
+    it('should support remove([1,2,3]) even if the indexes are not available or not available', function () {
         var flag = false;
         runs(function () {
-            testDB.store('item').put(testItemsForRemove).then(function () {
-                testDB.store('item').toArray().then(function (res) {
-                    initialLength = res.length;
-                    testDB.store('item').remove([100, 101]).then(function () {
+            testDB.store('item').toArray().then(function (res) {
+                var initialLength = res.length;
+                testDB.store('item').remove([999, 999]).then(function () {
+                    testDB.store('item').remove([]).then(function () {
                         testDB.store('item').toArray().then(function (res2) {
-                            expect(res2.length).toBe(initialLength - 2);
-                            testDB.store('item').remove([102, 103]).then(function () {
-                                testDB.store('item').toArray().then(function (res3) {
-                                    expect(res3.length).toBe(initialLength - 4);
-                                    flag = true;
-                                });
-                            });
+                            expect(res2.length).toBe(initialLength);
+                            flag = true;
                         });
+                    }, function (error) {
+                        expect(false).toBeTruthy();
+                        flag = true;
                     });
+
+                }, function (error) {
+                    expect(false).toBeTruthy();
+                    flag = true;
                 });
-            }, function (error) {
-                expect(false).toBeTruthy();
-                flag = true;
             });
         });
 
