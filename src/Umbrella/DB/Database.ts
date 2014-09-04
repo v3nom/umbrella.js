@@ -105,7 +105,7 @@ export class Database {
             return new SharedObjectStore(transaction, storeName);
         });
 
-        callback.apply(transaction, sharedStores);
+        callback.call(transaction, sharedStores);
         transaction.oncomplete = defered.resolve;
         return defered.promise;
     }
