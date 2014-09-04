@@ -647,8 +647,8 @@ describe('UmbrellaJS query specification', function () {
                 testDB.store('emplopyee').toArray().then(function (res2) {
                     var employeeInitialLength = res2.length;
                     testDB.stores(['emplopyee', 'item'], function (arrayOfStores) {
-                        var employeeStore = arrayOfStores[0];
-                        var itemStore = arrayOfStores[1];
+                        var employeeStore = arrayOfStores['emplopyee'];
+                        var itemStore = arrayOfStores['item'];
                         employeeStore, itemStore
                         itemStore.put(testItemsForRemove);
                         employeeStore.put(testEmployeesForRemove);
@@ -681,8 +681,8 @@ describe('UmbrellaJS query specification', function () {
                 testDB.store('emplopyee').toArray().then(function (res2) {
                     var employeeInitialLength = res2.length;
                     testDB.stores(['emplopyee', 'item'], function (arrayOfStores) {
-                        var employeeStore = arrayOfStores[0];
-                        var itemStore = arrayOfStores[1];
+                        var employeeStore = arrayOfStores['emplopyee'];
+                        var itemStore = arrayOfStores['item'];
                         itemStore.put(testItemsForRemove);
                         employeeStore.put(testEmployeesForRemove);
                         itemStore.remove([100, 101, 102, 103]);
@@ -714,8 +714,8 @@ describe('UmbrellaJS query specification', function () {
                 testDB.store('emplopyee').toArray().then(function (res2) {
                     var employeeInitialLength = res2.length;
                     testDB.stores(['emplopyee', 'item'], function (arrayOfStores) {
-                        var employeeStore = arrayOfStores[0];
-                        var itemStore = arrayOfStores[1];
+                        var employeeStore = arrayOfStores['emplopyee'];
+                        var itemStore = arrayOfStores['item'];
                         itemStore.put(testItemsForRemove);
                         employeeStore.put(testEmployeesForRemove);
                         itemStore.remove([100, 101, 102, 103, 999, 99999, 999999]);
