@@ -190,8 +190,8 @@ describe('UmbrellaJS crud operations', function () {
 
         runs(function () {
             crudDB.stores(['customer', 'item'], function (arrayOfStores) {
-                var customerStore = arrayOfStores[0];
-                var itemStore = arrayOfStores[1];
+                var customerStore = arrayOfStores['customer'];
+                var itemStore = arrayOfStores['item'];
                 expect(customerStore).toBeDefined();
                 expect(itemStore).toBeDefined();
                 customerStore.add({
