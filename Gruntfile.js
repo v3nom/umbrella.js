@@ -21,13 +21,18 @@ module.exports = function (grunt) {
             travis: {
                 configFile: 'karma.conf.js',
                 singleRun: true,
-                browsers: ['SL_Chrome','SL_Firefox'],
-                reporters:['saucelabs']
+                browsers: ['SL_Chrome', 'SL_Firefox'],
+                reporters: ['saucelabs']
+            },
+            travisPullRequest: {
+                configFile: 'karma.conf.js',
+                singleRun: true,
+                browsers: ['Firefox']
             },
             dev: {
                 configFile: 'karma.conf.js',
                 singleRun: true,
-                browsers:['Chrome','Firefox']
+                browsers: ['Chrome', 'Firefox']
             }
         },
         requirejs: {
@@ -80,7 +85,10 @@ module.exports = function (grunt) {
         copy: {
             main: {
                 files: [
-                    { src: 'src/Umbrella/almond.js', dest: 'tmp/' }
+                    {
+                        src: 'src/Umbrella/almond.js',
+                        dest: 'tmp/'
+                    }
                 ]
             }
         },
@@ -101,7 +109,8 @@ module.exports = function (grunt) {
     grunt.registerTask('buildDev', ['typescript', 'copy', 'requirejs:dev', 'rm:tmp']);
     grunt.registerTask('build', ['typescript', 'copy', 'requirejs:prod', 'requirejs:debug', 'rm:tmp']);
     grunt.registerTask('test', ['karma:travis']);
-    grunt.registerTask('testDev', ['buildDev','karma:dev']);
+    grunt.registerTask('testDev', ['buildDev', 'karma:dev']);
+    grunt.registerTask('testPull', ['build', 'karma:travisPullRequest'])
 
     grunt.registerTask('default', ['build', 'test']);
 };
