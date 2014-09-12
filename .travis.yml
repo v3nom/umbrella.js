@@ -2,9 +2,11 @@ language: node_js
 node_js:
 - '0.10'
 before_script:
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
 - npm install -g grunt-cli
 script:
-- grunt
+- '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && grunt || grunt testPull' 
 env:
   global:
   - secure: k2w01lXViIajvPWkrew0K+w5PS9/9KrCsqEmfg26qu9HfvIO2MUk4hFKZyQ101kjfGD3ro7FDlj97GZBNOO3KGCtQogrgADjWhzHvDdbu6OHMYH7FbIqa2RBf8/HgCQiTgLCTAlGYlUWX3QI6xK0rYc4EU5n3eqiRHsoWADgwGg=
