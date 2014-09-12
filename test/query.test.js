@@ -639,6 +639,40 @@ describe('UmbrellaJS query specification', function () {
             return flag;
         }, 2000);
     });
+    it('should support shared stores and will return one array', function () {
+        var flag = false;
+        runs(function () {
+            testDB.store('item').toArray().then(function (res) {
+                var itemInitialLength = res.length;
+                testDB.store('emplopyee').toArray().then(function (res2) {
+                    var employeeInitialLength = res2.length;
+                    testDB.stores(['emplopyee', 'item'], function (arrayOfStores) {
+                        var employeeStore = arrayOfStores['emplopyee'];
+                        var itemStore = arrayOfStores['item'];
+                        employeeStore, itemStore
+                        itemStore.put(testItemsForRemove);
+                        employeeStore.put(testEmployeesForRemove);
+                        itemStore.remove([100, 101, 102, 103]);
+                        employeeStore.remove([100]);
+                    }).then(function () {
+                        testDB.store('item').toArray().then(function (res) {
+                            expect(res.length).toBe(itemInitialLength);
+                            testDB.store('emplopyee').toArray().then(function (res2) {
+                                expect(res2.length).toBe(employeeInitialLength);
+                                flag = true;
+                            });
+                        });
+                    }, function (err) {
+                        alert("err");
+                    });
+                });
+            });
+        });
+
+        waitsFor(function () {
+            return flag;
+        }, 2000);
+    });
     it('should support remove([]) on shared stores', function () {
         var flag = false;
         runs(function () {
@@ -646,10 +680,12 @@ describe('UmbrellaJS query specification', function () {
                 var itemInitialLength = res.length;
                 testDB.store('emplopyee').toArray().then(function (res2) {
                     var employeeInitialLength = res2.length;
-                    testDB.stores(['emplopyee', 'item'], function (employeeStore, itemStore) {
+                    testDB.stores(['emplopyee', 'item'], function (arrayOfStores) {
+                        var employeeStore = arrayOfStores['emplopyee'];
+                        var itemStore = arrayOfStores['item'];
                         itemStore.put(testItemsForRemove);
                         employeeStore.put(testEmployeesForRemove);
-                        itemStore.remove([100,101,102,103]);
+                        itemStore.remove([100, 101, 102, 103]);
                         employeeStore.remove([100]);
                     }).then(function () {
                         testDB.store('item').toArray().then(function (res) {
@@ -677,7 +713,9 @@ describe('UmbrellaJS query specification', function () {
                 var itemInitialLength = res.length;
                 testDB.store('emplopyee').toArray().then(function (res2) {
                     var employeeInitialLength = res2.length;
-                    testDB.stores(['emplopyee', 'item'], function (employeeStore, itemStore) {
+                    testDB.stores(['emplopyee', 'item'], function (arrayOfStores) {
+                        var employeeStore = arrayOfStores['emplopyee'];
+                        var itemStore = arrayOfStores['item'];
                         itemStore.put(testItemsForRemove);
                         employeeStore.put(testEmployeesForRemove);
                         itemStore.remove([100, 101, 102, 103, 999, 99999, 999999]);

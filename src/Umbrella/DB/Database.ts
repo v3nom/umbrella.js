@@ -101,11 +101,13 @@ export class Database {
         var transaction = this.nativeDBInstance.transaction(storeNames, 'readwrite');
         transaction.onerror = defered.reject;
         transaction.onabort = defered.reject;
-        var sharedStores = storeNames.map((storeName) => {
-            return new SharedObjectStore(transaction, storeName);
-        });
-
-        callback.apply(transaction, sharedStores);
+		
+		var assocArray = {};
+		storeNames.forEach((storeName, index) => {
+			assocArray[storeName] = new SharedObjectStore(transaction, storeName);
+		});
+		       
+        callback.call(transaction, assocArray);
         transaction.oncomplete = defered.resolve;
         return defered.promise;
     }
