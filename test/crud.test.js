@@ -225,6 +225,35 @@ describe('UmbrellaJS crud operations', function () {
         }, 5000);
     });
 
+    it('should support clear the store', function () {
+        var flag = false;
+
+        runs(function () {
+            crudDB.store('customer').put(testO1).then(function () {
+                crudDB.store('item').put(test02).then(function () {
+                    crudDB.store('customer').clear().then(function () {
+                        crudDB.store('customer').toArray().then(function (res) {
+                            expect(res.length).toBe(0);
+                            crudDB.store('item').clear().then(function () {
+                                crudDB.store('item').toArray().then(function (res2) {
+                                    expect(res2.length).toBe(0);
+                                    flag = true;
+                                })
+                            })
+                        })
+                    });
+                })
+            }, function () {
+                expect(false).toBe(true);
+                flag = true;
+            })
+        });
+
+        waitsFor(function () {
+            return flag;
+        }, 'database should be deleted', 10000);
+    });
+
     it('should support deleting the database', function () {
         var flag = false;
 
