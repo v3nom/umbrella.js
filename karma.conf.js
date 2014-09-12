@@ -4,10 +4,7 @@ module.exports = function (config) {
 
     // Use ENV vars on Travis and sauce.json locally to get credentials
     if (!process.env.SAUCE_USERNAME) {
-        if (!fs.existsSync('sauce.json')) {
-            console.log('sauce.json not found');
-            process.exit(1);
-        } else {
+        if (fs.existsSync('sauce.json')) {
             process.env.SAUCE_USERNAME = require('./sauce').username;
             process.env.SAUCE_ACCESS_KEY = require('./sauce').accessKey;
         }
